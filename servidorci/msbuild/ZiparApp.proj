@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="DeployZip" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"  >
 <PropertyGroup>
-    <Sistema      Condition="'$(Sistema)'==''">questionario</Sistema>
+    <Sistema      Condition="'$(Sistema)'==''">package</Sistema>
 	<Ambiente     Condition="'$(Ambiente)'==''">teste</Ambiente>
-	<PathMSBuild  Condition="'$(PathMSBuild)'==''">c:\tools\msbuild\scripts</PathMSBuild>
-	<SourceFolder Condition="'$(SourceFolder)'==''">d:\jks\source</SourceFolder>
-	<BuildFolder  Condition="'$(BuildFolder)'==''">d:\jks\build</BuildFolder>
-    <ZipName      Condition="'$(ZipName)'==''">questionario</ZipName>
+	<PathMSBuild  Condition="'$(PathMSBuild)'==''">c:\tools\msbuild</PathMSBuild>
+	<BuildFolder  Condition="'$(BuildFolder)'==''">c:\work\jks\build</BuildFolder>
+    <ZipName      Condition="'$(ZipName)'==''">package</ZipName>
+	<DestDeploy  Condition="'$(DestDeploy)'==''">c:\temp\webdeploy</DestDeploy>
   </PropertyGroup>
   <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildCommunityTasks\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Time" />
   <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.Zip" />
@@ -19,41 +19,49 @@
   <Choose>
     <When Condition = "'$(Sistema)'=='controleos' and '$(Ambiente)'=='homologacao'" >
 		<PropertyGroup>
-			<SourceFolder>$(SourceFolder)\hom\controleos</SourceFolder>
 			<BuildFolder>$(BuildFolder)\hom\controleos</BuildFolder>
 			<ZipNamePdb>$(ZipName)_pdb</ZipNamePdb>
 		</PropertyGroup>		
     </When>
 	<When Condition = "'$(Sistema)'=='controleos' and '$(Ambiente)'=='producao'" >
 		<PropertyGroup>
-			<SourceFolder>$(SourceFolder)\prd\controleos</SourceFolder>
 			<BuildFolder>$(BuildFolder)\prd\controleos</BuildFolder>
 			<ZipNamePdb>$(ZipNamePdb)_pdb</ZipNamePdb>
 		</PropertyGroup>		
 	</When>
 	<When Condition = "'$(Sistema)'=='controleos' and '$(Ambiente)'=='teste'" >
 		<PropertyGroup>
-			<SourceFolder>$(SourceFolder)\dev\controleos</SourceFolder>
 			<BuildFolder>$(BuildFolder)\dev\controleos</BuildFolder>
 			<ZipNamePdb>$(ZipNamePdb)_pdb</ZipNamePdb>
+		</PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='templateapp' and '$(Ambiente)'=='producao'" >
+		<PropertyGroup>
+			<BuildFolder>$(BuildFolder)\prd\templateapp</BuildFolder>
+			<ZipNamePdb>$(ZipName)_pdb</ZipNamePdb>
 		</PropertyGroup>		
 	</When>
   </Choose>
 <Target Name="ZipBuildPdb">
 	<ItemGroup>
-		<ZipPdbSrcFiles Include="$(SourceFolder)\bin\*.pdb" />			
+		<ZipPdbSrcFiles Include="$(BuildFolder)\bin\*.pdb" />			
 	</ItemGroup>
-    <Message Text="Zipando os arquivo(s) pdb do sistema $(Sistema) a partir do diretorio $(SourceFolder)" />
-	<MSBuild.ExtensionPack.Compression.Zip TaskAction="Create" CompressFiles="@(ZipPdbSrcFiles)" RemoveRoot="$(SourceFolder)" ZipFileName="$(BuildFolder)\$(ZipNamePdb).zip"/>
-    <Message Text="Excluindo os arquivo(s) pdb do sistema $(Sistema) a partir do diretorio $(SourceFolder)" />
+    <Message Text="Zipando os arquivo(s) pdb do sistema $(Sistema) a partir do diretorio $(BuildFolder)" />
+	<MSBuild.ExtensionPack.Compression.Zip TaskAction="Create" CompressFiles="@(ZipPdbSrcFiles)" RemoveRoot="$(BuildFolder)" ZipFileName="$(BuildFolder)\$(ZipNamePdb).zip"/>
+    <Message Text="Excluindo os arquivo(s) pdb do sistema $(Sistema) a partir do diretorio $(BuildFolder)" />
 	<Delete Files="@(ZipPdbSrcFiles)" />
 </Target>
 <Target Name="ZipBuild">
 	<ItemGroup>
-		<ZipSrcFiles Include="$(SourceFolder)\**\*.*" />			
+		<ZipSrcFiles Include="$(BuildFolder)\**\*.*" />			
 	</ItemGroup>
-    <Message Text="Zipando os arquivo(s) restantes do sistema $(Sistema) a partir do diretorio $(SourceFolder)" />
-	<MSBuild.ExtensionPack.Compression.Zip TaskAction="Create" CompressFiles="@(ZipSrcFiles)" RemoveRoot="$(SourceFolder)" ZipFileName="$(BuildFolder)\$(ZipName).zip"/>
+    <Message Text="Zipando os arquivo(s) restantes do sistema $(Sistema) a partir do diretorio $(BuildFolder)" />
+	<MSBuild.ExtensionPack.Compression.Zip TaskAction="Create" CompressFiles="@(ZipSrcFiles)" RemoveRoot="$(BuildFolder)" ZipFileName="$(BuildFolder)\$(ZipName).zip"/>
 </Target>
-<Target Name="Deploy">
+<Target Name="WebDeploy">
+     <Exec Command="$(PathMSBuild)\msdeploy.exe -verb:sync -source:package='$(BuildFolder)\$(ZipName).zip' -dest:contentPath='$(DestDeploy)' -enableRule:DoNotDeleteRule " />
+</Target>
+<Target Name="WebDeployLocal">
+     <Exec Command="$(PathMSBuild)\msdeploy.exe -verb:sync -source:package='$(BuildFolder)\$(ZipName).zip' -dest:contentPath='$(DestDeploy)' -enableRule:DoNotDeleteRule " />
+</Target>
 </Project>
