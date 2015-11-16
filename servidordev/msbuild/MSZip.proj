@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="ZipBuild" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"  >
+  <PropertyGroup>
+    <Sistema  Condition="'$(Sistema)'==''">questionario</Sistema>
+	<PathMSBuild  Condition="'$(PathMSBuild)'==''">D:\CI\SCRIPTS\MSBUILD</PathMSBuild>
+	<ZipFolder    Condition="'$(ZipFolder)'==''">D:\GMUD Emergencial</ZipFolder>
+  </PropertyGroup>
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildCommunityTasks\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Time" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.Zip" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.Cab"/>
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.DNZip"/>
+  <Choose>
+     <When Condition = "'$(Sistema)'=='portalnetpreproducao'" >
+	  <PropertyGroup>
+	    <DstFolder>D:\Homologacao\Portalnet</DstFolder>
+		<DstFolderRoot>D:\Homologacao</DstFolderRoot>
+		<ZipName>PortalNetPreProducao</ZipName>
+      </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='portalnet'" >
+	  <PropertyGroup>
+	    <DstFolder>D:\Producao\Portalnet</DstFolder>
+		<DstFolderRoot>D:\Producao</DstFolderRoot>
+		<ZipName>PortalNet</ZipName>
+      </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='questionario'" >
+	   <PropertyGroup>
+	    <DstFolder>D:\Portal\Questionario</DstFolder>
+		<DstFolderRoot>D:\Portal</DstFolderRoot>
+		<ZipName>Questionario</ZipName>
+       </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='municipalizacao'" >
+	   <PropertyGroup>
+	    <DstFolder>D:\Portal\Municipalizacao</DstFolder>
+		<DstFolderRoot>D:\Portal</DstFolderRoot>
+		<ZipName>Municipalizacao</ZipName>
+       </PropertyGroup>		
+	</When>
+  </Choose>
+   <Target Name="ZipBuild">
+      <ItemGroup>
+		<ZipSrcFiles Include="$(DstFolder)\**\*.*" />			
+	  </ItemGroup>
+      <Message Text="Zipando os arquivo(s) do sistema $(Sistema) a partir do diretorio $(DstFolder)" />
+	  <MSBuild.ExtensionPack.Compression.Zip TaskAction="Create" CompressFiles="@(ZipSrcFiles)" RemoveRoot="$(DstFolderRoot)" ZipFileName="$(ZipFolder)\$(ZipName).zip"/>
+   </Target>
+</Project>
+

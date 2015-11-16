@@ -1,0 +1,92 @@
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe Buildsolution.targets /t:Build,RunTests,Zip
+
+http://stackoverflow.com/questions/3491308/using-msbuild-to-zip-up-multiple-project-directories
+http://code.dblock.org/iterating-over-lists-in-msbuild
+http://stackoverflow.com/questions/3491308/using-msbuild-to-zip-up-multiple-project-directories
+
+
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe MSZip.proj /p:Sistema="portalnetpreproducao"
+
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe MSZip.proj /p:Sistema="questionario"
+
+<ItemGroup>
+	 <ZipSrcFiles Include="$(DstFolder)\**\*.*" />			
+   </ItemGroup>
+   <!--
+   <Time Format="yyyyMMddHHmmss">
+	  <Output TaskParameter="FormattedTime" PropertyName="BuildDate" />
+   </Time>
+   -->
+   
+   http://www.msbuildextensionpack.com/help/4.0.5.0/html/f2118b59-554e-d745-5859-126a82b1df81.htm
+   
+   http://www.msbuildextensionpack.com/help/4.0.5.0/html/f2118b59-554e-d745-5859-126a82b1df81.htm
+   
+   http://www.msbuildextensionpack.com/help/3.5.11.0/html/1307e7d3-8121-600e-2a26-e969b0187b34.htm
+   
+----------------------------
+PROCESSO DE UNZIP O MODULO 
+<Project ToolsVersion="4.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TPath>$(MSBuildProjectDirectory)\..\MSBuild.ExtensionPack.tasks</TPath>
+    <TPath Condition="Exists('$(MSBuildProjectDirectory)\..\..\Common\MSBuild.ExtensionPack.tasks')">$(MSBuildProjectDirectory)\..\..\Common\MSBuild.ExtensionPack.tasks</TPath>
+  </PropertyGroup>
+  <Import Project="$(TPath)"/>
+  <Target Name="Default" DependsOnTargets="Sample1;Sample2"/>
+  <Target Name="Sample1">
+    <ItemGroup>
+      <!-- Set the collection of files to Zip-->
+      <FilesToZip Include="C:\Patches\**\*"/>
+    </ItemGroup>
+    <!-- Create a zip file based on the FilesToZip collection -->
+    <MSBuild.ExtensionPack.Compression.Zip TaskAction="Create" CompressFiles="@(FilesToZip)" ZipFileName="C:\newZipByFile.zip"/>
+    <MSBuild.ExtensionPack.Compression.Zip TaskAction="Create" Password="apassword" CompressionLevel="BestCompression" RemoveRoot="C:\Patches" CompressFiles="@(FilesToZip)" ZipFileName="C:\newZipByFileBestCompression.zip"/>
+    <!-- Create a zip file based on a Path -->
+    <MSBuild.ExtensionPack.Compression.Zip TaskAction="Create" CompressPath="C:\Patches" ZipFileName="C:\newZipByPath.zip"/>
+    <!-- Extract a zip file-->
+    <MSBuild.ExtensionPack.Compression.Zip TaskAction="Extract" ExtractPath="C:\aaa11\1" ZipFileName="C:\newZipByFile.zip"/>
+    <MSBuild.ExtensionPack.Compression.Zip TaskAction="Extract" ExtractPath="C:\aaa11\2" ZipFileName="C:\newZipByPath.zip"/>
+    <MSBuild.ExtensionPack.Compression.Zip TaskAction="Extract" Password="apassword"  ExtractPath="C:\aaa11\3" ZipFileName="C:\newZipByFileBestCompression.zip"/>
+  </Target>
+  <Target Name="Sample2">
+    <PropertyGroup>
+      <SourceDirectory>MotorData\</SourceDirectory>
+    </PropertyGroup>
+    <ItemGroup>
+      <Files Include="$(SourceDirectory)*" Exclude="$(SourceDirectory).XYZ\**\*">
+        <Group>Common</Group>
+      </Files>
+      <Files Include="$(SourceDirectory)Cars\*" Exclude="$(SourceDirectory)Cars\.XYZ\**\*">
+        <Group>Cars</Group>
+      </Files>
+      <Files Include="$(SourceDirectory)Trucks\*" Exclude="$(SourceDirectory)Trucks\.XYZ\**\*">
+        <Group>Trucks</Group>
+      </Files>
+    </ItemGroup>
+    <!-- Create the output folder -->
+    <ItemGroup>
+      <OutputDirectory Include="output\"/>
+    </ItemGroup>
+    <MakeDir Directories="@(OutputDirectory)"/>
+    <PropertyGroup>
+      <WorkingDir>%(OutputDirectory.Fullpath)</WorkingDir>
+    </PropertyGroup>
+    <!-- Zip files based on the group they belong to -->
+    <MSBuild.ExtensionPack.Compression.Zip TaskAction="Create" CompressFiles="@(Files)" ZipFileName="$(WorkingDir)%(Files.Group).zip"/>
+  </Target>
+</Project>   
+
+
+  <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="C:\a" Destination="C:\abzz" Files="*.txt" Options="/e">
+            <Output TaskParameter="ExitCode" PropertyName="Exit" />
+            <Output TaskParameter="ReturnCode" PropertyName="Return" />
+        </MSBuild.ExtensionPack.FileSystem.RoboCopy>
+        <Message Text="ExitCode = $(Exit)"/>
+        <Message Text="ReturnCode = $(Return)"/>
+		
+		/log+: <LogFile>
+		
+ <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="C:\b" Destination="C:\bbzz" Files="*.*" Options="/MIR">
+            <Output TaskParameter="ExitCode" PropertyName="Exit" />
+            <Output TaskParameter="ReturnCode" PropertyName="Return" />
+        </MSBuild.ExtensionPack.FileSystem.RoboCopy>		

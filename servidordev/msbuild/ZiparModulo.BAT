@@ -1,0 +1,1 @@
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe D:\CI\Scripts\MSBUILD\MSZip.proj /t:ZipBuild /property:Sistema=%1 

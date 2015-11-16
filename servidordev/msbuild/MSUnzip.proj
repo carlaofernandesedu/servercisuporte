@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="DeployZip" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"  >
+  <PropertyGroup>
+    <Sistema  Condition="'$(Sistema)'==''">questionario</Sistema>
+	<Ambiente  Condition="'$(Ambiente)'==''">teste</Ambiente>
+	<PathMSBuild  Condition="'$(PathMSBuild)'==''">d:\ci\scripts\msbuild</PathMSBuild>
+	<StageFolder    Condition="'$(StageFolder)'==''">d:\ci\arquivos</StageFolder>
+	<BkpFolder    Condition="'$(BkFolder)'==''">d:\ci\arquivos\bkp</BkpFolder>
+  <pacotegmud    Condition="'$(pacotegmud)'==''">0</pacotegmud>
+  </PropertyGroup>
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildCommunityTasks\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Time" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.Zip" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.Cab" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.DNZip" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.FileSystem.File" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.FileSystem.FindUnder" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.FileSystem.RoboCopy" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Computer.WindowsService" />
+  <Choose>
+    <When Condition = "'$(Sistema)'=='portalnet' and '$(Ambiente)'=='homologacao'" >
+		<PropertyGroup>
+			<DstFolderZip>$(StageFolder)\src\homologacao\portalnet</DstFolderZip>
+			<ZipName>$(StageFolder)\rec\homologacao\portalnet.zip</ZipName>
+			<DstFolderApp>d:\homologacao\portalnet</DstFolderApp>
+			<NomeServicoWin></NomeServicoWin>
+			<BkpFolder>$(BkpFolder)\homologacao\portalnet</BkpFolder>
+			<pacotegmud>0</pacotegmud>
+		</PropertyGroup>		
+    </When>
+	<When Condition = "'$(Sistema)'=='portalnet' and '$(Ambiente)'=='producao'" >
+		<PropertyGroup>
+			<DstFolderZip>$(StageFolder)\src\producao\portalnet</DstFolderZip>
+			<ZipName>$(StageFolder)\rec\producao\portalnet.zip</ZipName>
+			<DstFolderApp>d:\producao\portalnet</DstFolderApp>
+			<NomeServicoWin></NomeServicoWin>
+			<BkpFolder>$(BkpFolder)\producao\portalnet</BkpFolder>
+			<pacotegmud>0</pacotegmud>
+		</PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='portalnet' and '$(Ambiente)'=='teste'" >
+		<PropertyGroup>
+			<DstFolderZip>$(StageFolder)\src\teste\portalnet</DstFolderZip>
+			<ZipName>$(StageFolder)\rec\teste\portalnet.zip</ZipName>
+			<DstFolderApp>d:\teste\portalnet</DstFolderApp>
+			<NomeServicoWin></NomeServicoWin>
+			<BkpFolder>$(BkpFolder)\teste\portalnet</BkpFolder>
+			<pacotegmud>0</pacotegmud>
+		</PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='questionario'" >
+		<PropertyGroup>
+			<DstFolderZip>$(StageFolder)\src\producao\questionario</DstFolderZip>
+			<ZipName>$(StageFolder)\rec\producao\questionario.zip</ZipName>
+			<DstFolderApp>d:\portal\questionario</DstFolderApp>
+			<NomeServicoWin></NomeServicoWin>
+			<BkpFolder>$(BkpFolder)\producao\questionario</BkpFolder>
+		</PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='municipalizacao'" >
+	    <PropertyGroup>
+			<DstFolderZip>$(StageFolder)\src\producao\municipalizacao</DstFolderZip>
+			<ZipName>$(StageFolder)\rec\producao\municipalizacao.zip</ZipName>
+			<DstFolderApp>d:\portal\municipalizacao</DstFolderApp>
+			<NomeServicoWin></NomeServicoWin>
+			<BkpFolder>$(BkpFolder)\producao\municipalizacao</BkpFolder>
+        </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='roe'" >
+		<PropertyGroup>
+			<DstFolderZip>$(StageFolder)\src\producao\roe</DstFolderZip>
+			<ZipName>$(StageFolder)\rec\producao\roe.zip</ZipName>
+			<DstFolderApp>d:\servicos\win\roe</DstFolderApp>
+			<NomeServicoWin>ROE - Envio de Relatorios</NomeServicoWin>
+			<BkpFolder>$(BkpFolder)\producao\roe</BkpFolder>
+		</PropertyGroup>		
+	</When>
+  </Choose>
+   <Target Name = "Clean">
+        <RemoveDir Directories="$(DstFolderZip)" Condition = "Exists('$(DstFolderZip)')" />
+    </Target>
+   <Target Name="DeployZip" DependsOnTargets="Clean">
+      <Message Text="Descompatando os arquivo(s) do sistema $(Sistema) a partir do diretorio $(DstFolderZip)" />
+	  <Message Text="Aguarde..." />
+	  <MSBuild.ExtensionPack.Compression.Zip TaskAction="Extract" ExtractPath="$(DstFolderZip)" ZipFileName="$(ZipName)"/> 
+	  <Message Text="Descompactacao concluida..." />
+   </Target>
+   <Target Name="StopService" Condition="'$(NomeServicoWin)'!=''" >
+		<Message Text="Verificando Servico: $(NomeServicoWin)"/>
+        <MSBuild.ExtensionPack.Computer.WindowsService TaskAction="CheckExists" ServiceName="$(NomeServicoWin)">
+            <Output TaskParameter="Exists" PropertyName="ServicoExiste"/>
+        </MSBuild.ExtensionPack.Computer.WindowsService>
+        <Message Text="Servico Existe: $(ServicoExiste)"/>
+		<Message Text="Parando o Servico: $(NomeServicoWin)" Condition="'$(ServicoExiste)'=='True'" />
+		<MSBuild.ExtensionPack.Computer.WindowsService TaskAction="Stop" ServiceName="$(NomeServicoWin)" Condition="'$(ServicoExiste)'=='True'" />
+   </Target>
+   <Target Name="BkpApp">	
+       <Time Format="yyyyMMdd_hhmmss">
+			<Output TaskParameter="FormattedTime" PropertyName="BuildDate2" />
+	  </Time>
+	   <PropertyGroup>
+	        <DstFolderZip Condition = "Exists('$(DstFolderZip)\$(Sistema)')" >$(DstFolderZip)\$(Sistema)</DstFolderZip>
+	   </PropertyGroup>
+        <MSBuild.ExtensionPack.FileSystem.FindUnder TaskAction="FindFiles" Path="$(DstFolderZip)">
+            <Output ItemName="AllFoundItems" TaskParameter="FoundItems"/>
+        </MSBuild.ExtensionPack.FileSystem.FindUnder>
+		<ItemGroup>
+			<Bkpfiles Include="@(AllFoundItems->Replace('$(DstFolderZip)','$(DstFolderApp)'))" />
+		</ItemGroup> 
+		<Message Text="Realizando o backup do arquivo @(Bkpfiles)" Condition="Exists('%(Bkpfiles.Identity)')"  />
+		 <Copy
+            SourceFiles="@(Bkpfiles)"
+            DestinationFiles="@(Bkpfiles->Replace('$(DstFolderApp)','$(BkpFolder)\$(BuildDate2)'))"
+			Condition="Exists('%(Bkpfiles.Identity)')"
+        />
+   </Target>
+   <Target Name="CopyToApp">   
+     <Time Format="yyyyMMdd">
+			<Output TaskParameter="FormattedTime" PropertyName="BuildDate" />
+	  </Time>
+	   <PropertyGroup>
+	        <DstFolderZip Condition = "Exists('$(DstFolderZip)\$(Sistema)')" >$(DstFolderZip)\$(Sistema)</DstFolderZip>
+	   </PropertyGroup>
+	  <Message Text="Copiando os arquivos de $(DstFolderZip) para $(DstFolderApp) .." />
+	  <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(DstFolderZip)" Destination="$(DstFolderApp)" Files="*.*" Options="/r:2 /e /log+:$(StageFolder)\processados\$(Sistema)_$(BuildDate).txt">
+            <Output TaskParameter="ExitCode" PropertyName="Exit" />
+            <Output TaskParameter="ReturnCode" PropertyName="Return" />
+      </MSBuild.ExtensionPack.FileSystem.RoboCopy>
+	  <!--
+      <Message Text="ExitCode = $(Exit)"/>
+      <Message Text="ReturnCode = $(Return)"/>
+	  -->
+	  <Message Text="Arquivos copiados com sucesso" Condition="$(Return)==1" />
+   </Target>
+   <Target Name="StartService" Condition="'$(NomeServicoWin)'!=''" >
+		<Message Text="Verificando Servico: $(NomeServicoWin)"/>
+        <MSBuild.ExtensionPack.Computer.WindowsService TaskAction="CheckExists" ServiceName="$(NomeServicoWin)">
+            <Output TaskParameter="Exists" PropertyName="ServicoExiste"/>
+        </MSBuild.ExtensionPack.Computer.WindowsService>
+        <Message Text="Servico Existe: $(ServicoExiste)"/>
+		<Message Text="Subindo o Servico: $(NomeServicoWin)" Condition="'$(ServicoExiste)'=='True'" />
+		<MSBuild.ExtensionPack.Computer.WindowsService TaskAction="Start" ServiceName="$(NomeServicoWin)" Condition="'$(ServicoExiste)'=='True'" />
+   </Target>
+   <Target Name="MoveZip">
+		<Time Format="yyyyMMddHHmmss">
+			<Output TaskParameter="FormattedTime" PropertyName="BuildDateHour" />
+		</Time>
+       <Message Text="Copiando o arquivo $(ZipName) para o diretorio de GMUDS - Gmud_Emergencial" Condition="'$(pacotegmud)'=='1'"  />
+        <ItemGroup>
+          <arquivogmud Include="$(ZipName)"/>
+        </ItemGroup>
+       <Copy SourceFiles="@(arquivogmud)" DestinationFolder="D:\GMUD Emergencial" Condition="'$(pacotegmud)'=='1'" />
+       <Message Text="Movendo o arquivo para pasta Processados" />
+       <MSBuild.ExtensionPack.FileSystem.File TaskAction="Move" Path="$(ZipName)" TargetPath="$(StageFolder)\processados\$(Sistema)_$(BuildDateHour).zip"/>
+   </Target>
+</Project>
+

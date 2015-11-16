@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Setup" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"  >
+<UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildCommunityTasks\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Time" />
+<UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.Zip" />
+<UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.Cab"/>
+<UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.DNZip"/>
+<UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.FileSystem.File"/>
+<UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.FileSystem.RoboCopy"/>
+<PropertyGroup>
+    <Sistema     Condition="'$(Sistema)'==''">questionario</Sistema>
+	<Ambiente    Condition="'$(Ambiente)'==''">teste</Ambiente>
+	<PathMSBuild Condition="'$(PathMSBuild)'==''">d:\ci\scripts\msbuild</PathMSBuild>
+	<StageFolder Condition="'$(StageFolder)'==''">d:\ci\arquivos</StageFolder>
+	<ZipFolderOUT   Condition="'$(ZipFolderOUT)'==''">D:\GMUD Emergencial</ZipFolderOUT>
+</PropertyGroup>
+  <Choose>
+    <!--MSZIP-->
+    <When Condition = "'$(Sistema)'=='portalnetpreproducao'" >
+	  <PropertyGroup>
+	    <DstFolder>D:\Homologacao\Portalnet</DstFolder>
+		<DstFolderRoot>D:\Homologacao</DstFolderRoot>
+		<ZipNameOUT>PortalNetPreProducao</ZipNameOUT>
+      </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='portalnet'" >
+	  <PropertyGroup>
+	    <DstFolder>D:\Producao\Portalnet</DstFolder>
+		<DstFolderRoot>D:\Producao</DstFolderRoot>
+		<ZipNameOUT>PortalNet</ZipNameOUT>
+      </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='questionario'" >
+	   <PropertyGroup>
+	    <DstFolder>D:\Portal\Questionario</DstFolder>
+		<DstFolderRoot>D:\Portal</DstFolderRoot>
+		<ZipNameOUT>Questionario</ZipNameOUT>
+       </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='municipalizacao'" >
+	   <PropertyGroup>
+	    <DstFolder>D:\Portal\Municipalizacao</DstFolder>
+		<DstFolderRoot>D:\Portal</DstFolderRoot>
+		<ZipNameOUT>Municipalizacao</ZipNameOUT>
+       </PropertyGroup>		
+	</When>
+	<!--UNZIP-->
+	<When Condition = "'$(Sistema)'=='portalnet' and '$(Ambiente)'=='homologacao'" >
+		  <PropertyGroup>
+			<DstFolderZip>$(StageFolder)\src\homologacao\portalnet</DstFolderZip>
+			<ZipName>$(StageFolder)\rec\homologacao\portalnet.zip</ZipName>
+			<DstFolderApp>d:\homologacao\portalnet</DstFolderApp>
+		  </PropertyGroup>		
+    </When>
+	<When Condition = "'$(Sistema)'=='portalnet' and '$(Ambiente)'=='producao'" >
+		  <PropertyGroup>
+			<DstFolderZip>$(StageFolder)\src\producao\portalnet</DstFolderZip>
+			<ZipName>$(StageFolder)\rec\producao\portalnet.zip</ZipName>
+			<DstFolderApp>d:\producao\portalnet</DstFolderApp>
+		  </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='portalnet' and '$(Ambiente)'=='teste'" >
+		  <PropertyGroup>
+			<DstFolderZip>$(StageFolder)\src\teste\portalnet</DstFolderZip>
+			<ZipName>$(StageFolder)\rec\teste\portalnet.zip</ZipName>
+			<DstFolderApp>d:\teste\portalnet</DstFolderApp>
+		  </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='questionario' and '$(Ambiente)'=='producao'" >
+	   <PropertyGroup>
+	    <DstFolderZip>$(StageFolder)\src\producao\questionario</DstFolderZip>
+		<ZipName>$(StageFolder)\rec\producao\questionario.zip</ZipName>
+		<DstFolderApp>d:\portal\questionario</DstFolderApp>
+       </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='municipalizacao' and '$(Ambiente)'=='producao'" >
+	   <PropertyGroup>
+	    <DstFolderZip>$(StageFolder)\src\producao\municipalizacao</DstFolderZip>
+		<ZipName>$(StageFolder)\rec\producao\municipalizacao.zip</ZipName>
+		<DstFolderApp>d:\portal\municipalizacao</DstFolderApp>
+       </PropertyGroup>		
+	</When>
+  </Choose>
+  <Target Name = "Setup">
+  </Target>
+</Project>
