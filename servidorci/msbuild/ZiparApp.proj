@@ -21,36 +21,42 @@
 		<PropertyGroup>
 			<BuildFolder>$(BuildFolder)\hom\controleos</BuildFolder>
 			<ZipNamePdb>$(ZipName)_pdb</ZipNamePdb>
+			<DestDeploy>d:\portal\remote</DestDeploy>
 		</PropertyGroup>		
     </When>
 	<When Condition = "'$(Sistema)'=='controleos' and '$(Ambiente)'=='producao'" >
 		<PropertyGroup>
 			<BuildFolder>$(BuildFolder)\prd\controleos</BuildFolder>
 			<ZipNamePdb>$(ZipNamePdb)_pdb</ZipNamePdb>
+			<DestDeploy>d:\portal\remote</DestDeploy>
 		</PropertyGroup>		
 	</When>
 	<When Condition = "'$(Sistema)'=='controleos' and '$(Ambiente)'=='teste'" >
 		<PropertyGroup>
 			<BuildFolder>$(BuildFolder)\dev\controleos</BuildFolder>
 			<ZipNamePdb>$(ZipNamePdb)_pdb</ZipNamePdb>
+			<DestDeploy>d:\portal\remote</DestDeploy>
 		</PropertyGroup>		
 	</When>
 	<When Condition = "'$(Sistema)'=='templateapp' and '$(Ambiente)'=='producao'" >
 		<PropertyGroup>
 			<BuildFolder>$(BuildFolder)\prd\templateapp</BuildFolder>
 			<ZipNamePdb>$(ZipName)_pdb</ZipNamePdb>
+			<DestDeploy>d:\portal\remote</DestDeploy>
 		</PropertyGroup>		
 	</When>
 	<When Condition = "'$(Sistema)'=='templateapp' and '$(Ambiente)'=='homologacao'" >
 		<PropertyGroup>
 			<BuildFolder>$(BuildFolder)\hom\templateapp</BuildFolder>
 			<ZipNamePdb>$(ZipName)_pdb</ZipNamePdb>
+			<DestDeploy>d:\portal\remote</DestDeploy>
 		</PropertyGroup>		
 	</When>
     <When Condition = "'$(Sistema)'=='enquadramentoqae' and '$(Ambiente)'=='homologacao'" >
 		<PropertyGroup>
 			<BuildFolder>$(BuildFolder)\hom\enquadramentoqae</BuildFolder>
 			<ZipNamePdb>$(ZipName)_pdb</ZipNamePdb>
+			<DestDeploy>d:\portal\remote</DestDeploy>
 		</PropertyGroup>		
     </When>
   </Choose>
@@ -81,7 +87,7 @@
     <Message Text="Excluindo os arquivo(s) pdb do sistema $(Sistema) a partir do diretorio $(BuildFolder)" />
 	<Delete Files="@(ZipPdbSrcFiles)" />
 </Target>
-<Target Name="ZipBuild" Condition="'$(ZipName)'!='package'" >
+<Target Name="ZipBuild" Condition="'$(BuildFolder)'!='c:\work\jks\build'" >
 	<ItemGroup>
 		<ZipSrcFiles Include="$(BuildFolder)\**\*.*" />			
 	</ItemGroup>
@@ -89,7 +95,7 @@
 	<MSBuild.ExtensionPack.Compression.Zip TaskAction="Create" CompressFiles="@(ZipSrcFiles)" RemoveRoot="$(BuildFolder)" ZipFileName="$(BuildFolder)\$(ZipName).zip"/>
 </Target>
 <Target Name="WebDeploy">
-     <Exec Command="$(PathMSBuild)\msdeploy.exe -verb:sync -source:package='$(BuildFolder)\$(ZipName).zip' -dest:contentPath='$(DestDeploy)' -enableRule:DoNotDeleteRule " />
+     <Exec Command="$(PathMSBuild)\msdeploy.exe -verb:sync -source:package='$(BuildFolder)\$(ZipName).zip' -dest:contentPath='$(DestDeploy)',computerName='https://10.200.240.19:8172/msdeploy.axd?site=Default%20Web%20Site',UserName='prodesp-dc02\cmelo',Password='Desp@3131',AuthType='NTLM' -allowUntrusted -enableRule:DoNotDeleteRule" />
 </Target>
 <Target Name="WebDeployLocal">
      <Exec Command="$(PathMSBuild)\msdeploy.exe -verb:sync -source:package='$(BuildFolder)\$(ZipName).zip' -dest:contentPath='$(DestDeploy)' -enableRule:DoNotDeleteRule " />
