@@ -16,7 +16,7 @@
   <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.FileSystem.FindUnder" />
   <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.FileSystem.RoboCopy" />
   <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Computer.WindowsService" />
-  <Choose>
+ <Choose>
     <When Condition = "'$(Sistema)'=='portalnet' and '$(Ambiente)'=='homologacao'" >
 		<PropertyGroup>
 			<DstFolderZip>$(StageFolder)\src\homologacao\portalnet</DstFolderZip>
@@ -47,6 +47,28 @@
 			<pacotegmud>0</pacotegmud>
 		</PropertyGroup>		
 	</When>
+	<When Condition = "'$(Sistema)'=='usuario' and '$(Ambiente)'=='producao'" >
+		<PropertyGroup>
+			<DstFolderZip>$(StageFolder)\src\producao\usuario</DstFolderZip>
+			<ZipName>$(StageFolder)\rec\producao\usuario.zip</ZipName>
+			<DstFolderApp>d:\producao\servicosweb\usuario</DstFolderApp>
+			<NomeServicoWin></NomeServicoWin>
+			<BkpFolder>$(BkpFolder)\producao\usuario</BkpFolder>
+			<pacotegmud>0</pacotegmud>
+		</PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='contagem' and '$(Ambiente)'=='producao'" >
+		<PropertyGroup>
+			<DstFolderZip>$(StageFolder)\src\producao\contagem</DstFolderZip>
+			<ZipName>$(StageFolder)\rec\producao\contagem.zip</ZipName>
+			<DstFolderApp>d:\producao\servicosweb\contagem</DstFolderApp>
+			<NomeServicoWin></NomeServicoWin>
+			<BkpFolder>$(BkpFolder)\producao\contagem</BkpFolder>
+			<pacotegmud>0</pacotegmud>
+		</PropertyGroup>		
+	</When>
+</Choose>
+<Choose>
 	<When Condition = "'$(Sistema)'=='questionario'" >
 		<PropertyGroup>
 			<DstFolderZip>$(StageFolder)\src\producao\questionario</DstFolderZip>
@@ -65,6 +87,24 @@
 			<BkpFolder>$(BkpFolder)\producao\municipalizacao</BkpFolder>
         </PropertyGroup>		
 	</When>
+	<When Condition = "'$(Sistema)'=='estatico'" >
+	    <PropertyGroup>
+			<DstFolderZip>$(StageFolder)\src\producao\estatico</DstFolderZip>
+			<ZipName>$(StageFolder)\rec\producao\estatico.zip</ZipName>
+			<DstFolderApp>d:\portal\arqsgdae\estatico</DstFolderApp>
+			<NomeServicoWin></NomeServicoWin>
+			<BkpFolder>$(BkpFolder)\producao\estatico</BkpFolder>
+        </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='jsp'" >
+	    <PropertyGroup>
+			<DstFolderZip>$(StageFolder)\src\producao\jsp</DstFolderZip>
+			<ZipName>$(StageFolder)\rec\producao\jsp.zip</ZipName>
+			<DstFolderApp>d:\portal\arqsgdae\jsp</DstFolderApp>
+			<NomeServicoWin></NomeServicoWin>
+			<BkpFolder>$(BkpFolder)\producao\jsp</BkpFolder>
+        </PropertyGroup>		
+	</When>
 	<When Condition = "'$(Sistema)'=='roe'" >
 		<PropertyGroup>
 			<DstFolderZip>$(StageFolder)\src\producao\roe</DstFolderZip>
@@ -74,7 +114,79 @@
 			<BkpFolder>$(BkpFolder)\producao\roe</BkpFolder>
 		</PropertyGroup>		
 	</When>
-  </Choose>
+	<When Condition = "'$(Sistema)'=='atribuicaovantagem.services.win64'" >
+	   <PropertyGroup>
+	    <DstFolderZip>$(StageFolder)\src\producao\atribuicaovantagem.services.win64</DstFolderZip>
+		<ZipName>$(StageFolder)\rec\producao\atribuicaovantagem.services.win64.zip</ZipName>
+		<DstFolderApp>d:\servicos\win\atribuicaovantagem.services.win64</DstFolderApp>
+		<NomeServicoWin>Service</NomeServicoWin>
+		<BkpFolder>$(BkpFolder)\producao\atribuicaovantagem.services.win64</BkpFolder>
+       </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='winservicepnae'" >
+	   <PropertyGroup>
+	    <DstFolderZip>$(StageFolder)\src\producao\winservicepnae</DstFolderZip>
+		<ZipName>$(StageFolder)\rec\producao\winservicepnae.zip</ZipName>
+		<DstFolderApp>d:\servicos\win\winservicepnae</DstFolderApp>
+		<NomeServicoWin>GOV - PNAE</NomeServicoWin>
+		<BkpFolder>$(BkpFolder)\producao\winservicepnae</BkpFolder>
+       </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='peme.service.win'" >
+	   <PropertyGroup>
+	    <DstFolderZip>$(StageFolder)\src\producao\peme.service.win</DstFolderZip>
+		<ZipName>$(StageFolder)\rec\producao\peme.service.win.zip</ZipName>
+		<DstFolderApp>d:\servicos\win\peme.service.win</DstFolderApp>
+		<NomeServicoWin>GOV - Processamento PEME</NomeServicoWin>
+		<BkpFolder>$(BkpFolder)\producao\peme.service.win</BkpFolder>
+       </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='gratificacaogge.ws'" >
+	   <PropertyGroup>
+	    <DstFolderZip>$(StageFolder)\src\producao\gratificacaogge.ws</DstFolderZip>
+		<ZipName>$(StageFolder)\rec\producao\gratificacaogge.ws.zip</ZipName>
+		<DstFolderApp>d:\servicos\win\gratificacaogge.ws</DstFolderApp>
+		<NomeServicoWin>gratificacaogge.ws</NomeServicoWin>
+		<BkpFolder>$(BkpFolder)\producao\gratificacaogge.ws</BkpFolder>
+       </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='lp'" >
+	   <PropertyGroup>
+	    <DstFolderZip>$(StageFolder)\src\producao\lp</DstFolderZip>
+		<ZipName>$(StageFolder)\rec\producao\lp.zip</ZipName>
+		<DstFolderApp>d:\servicos\win\lp</DstFolderApp>
+		<NomeServicoWin>WS.LicencaPremio</NomeServicoWin>
+		<BkpFolder>$(BkpFolder)\producao\lp</BkpFolder>
+       </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='servicoazure'" >
+	   <PropertyGroup>
+	    <DstFolderZip>$(StageFolder)\src\producao\servicoazure</DstFolderZip>
+		<ZipName>$(StageFolder)\rec\producao\servicoazure.zip</ZipName>
+		<DstFolderApp>d:\servicos\win\servicoazure</DstFolderApp>
+		<NomeServicoWin>ServicoAzure</NomeServicoWin>
+		<BkpFolder>$(BkpFolder)\producao\servicoazure</BkpFolder>
+       </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='changepoint'" >
+	   <PropertyGroup>
+	    <DstFolderZip>$(StageFolder)\src\producao\changepoint</DstFolderZip>
+		<ZipName>$(StageFolder)\rec\producao\changepoint.zip</ZipName>
+		<DstFolderApp>d:\changepoint</DstFolderApp>
+		<NomeServicoWin></NomeServicoWin>
+		<BkpFolder>$(BkpFolder)\producao\changepoint</BkpFolder>
+       </PropertyGroup>		
+	</When>
+	<When Condition = "'$(Sistema)'=='monitoramento'" >
+		<PropertyGroup>
+			<DstFolderZip>$(StageFolder)\src\producao\monitoramento</DstFolderZip>
+			<ZipName>$(StageFolder)\rec\producao\monitoramento.zip</ZipName>
+			<DstFolderApp>d:\portal\monitoramento</DstFolderApp>
+			<NomeServicoWin></NomeServicoWin>
+			<BkpFolder>$(BkpFolder)\producao\monitoramento</BkpFolder>
+		</PropertyGroup>		
+	</When>
+</Choose>
    <Target Name = "Clean">
         <RemoveDir Directories="$(DstFolderZip)" Condition = "Exists('$(DstFolderZip)')" />
     </Target>

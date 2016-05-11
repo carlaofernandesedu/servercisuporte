@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="ListarArquivos" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"  >
+  <PropertyGroup>
+    <DstFolder  Condition="'$(DstFolder)'==''">d:\producao\portalnet\</DstFolder>
+	<PathMSBuild  Condition="'$(PathMSBuild)'==''">d:\ci\scripts\msbuild</PathMSBuild>
+  </PropertyGroup>
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildCommunityTasks\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Time" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.Zip" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.Cab" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.DNZip" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.FileSystem.File" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.FileSystem.FindUnder" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.FileSystem.RoboCopy" />
+  <UsingTask AssemblyFile="$(PathMSBuild)\Tools\MSBuildExtensionPack\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Computer.WindowsService" />
+   <Target Name="ListarArquivos">	
+       <Time Format="yyyyMMdd_hhmmss">
+			<Output TaskParameter="FormattedTime" PropertyName="BuildDate2" />
+	  </Time>
+	  <Time Format="yyyy-MM-dd 00:00">
+			<Output TaskParameter="FormattedTime" PropertyName="BuildDate3" />
+	  </Time>
+        <MSBuild.ExtensionPack.FileSystem.FindUnder TaskAction="FindFilesAndDirectories" Path="$(DstFolder)" ModifiedAfterDate="$(BuildDate3)"  >
+            <Output ItemName="AllFoundItems" TaskParameter="FoundItems"/>
+        </MSBuild.ExtensionPack.FileSystem.FindUnder>
+		<ItemGroup>
+			<MyFiletxt Include="d:\ci\arquivos\build\Portalnet_$(BuildDate2).txt" />
+			<Lines Include="@(AllFoundItems)" />
+		</ItemGroup> 
+		<Message Text="Criando o arquivo em d:\ci\arquivos\build\Portalnet_$(BuildDate2).txt"  />
+		<Message Text="@(Lines)"  />
+		<MSBuild.ExtensionPack.FileSystem.File TaskAction="Create" Files="d:\ci\arquivos\build\Portalnet_$(BuildDate2).txt" />
+        <MSBuild.ExtensionPack.FileSystem.File TaskAction="WriteLines" Files="d:\ci\arquivos\build\Portalnet_$(BuildDate2).txt" Lines="@(Lines)" Condition="Exists('%(Lines.Identity)')" />
+   </Target>
+</Project>
+
