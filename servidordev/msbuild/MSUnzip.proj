@@ -243,6 +243,21 @@
 	  -->
 	  <Message Text="Arquivos copiados com sucesso" Condition="$(Return)==1" />
    </Target>
+   <Target Name="Copy2ToApp"  Condition ="'$(Sistema)'=='portalnet' and '$(Ambiente)'=='homologacao'" >   
+     <Time Format="yyyyMMdd">
+			<Output TaskParameter="FormattedTime" PropertyName="BuildDate" />
+	  </Time>
+	   <PropertyGroup>
+	        <DstFolderZip Condition = "Exists('$(DstFolderZip)\$(Sistema)')" >$(DstFolderZip)\$(Sistema)</DstFolderZip>
+			<DstFolderGMUD>d:\sourcegmud\$(Ambiente)\portalnet</DstFolderGMUD>
+	   </PropertyGroup>
+	  <Message Text="Copiando os arquivos de $(DstFolderZip) para $(DstFolderGMUD) .." />
+	  <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(DstFolderZip)" Destination="$(DstFolderGMUD)" Files="*.*" Options="/r:2 /e /log+:$(StageFolder)\processados\$(Sistema)GMUD_$(BuildDate).txt">
+            <Output TaskParameter="ExitCode" PropertyName="Exit" />
+            <Output TaskParameter="ReturnCode" PropertyName="Return" />
+      </MSBuild.ExtensionPack.FileSystem.RoboCopy>
+	  <Message Text="Arquivos para GMUD copiados com sucesso" Condition="$(Return)==1" />
+   </Target>
    <Target Name="StartService" Condition="'$(NomeServicoWin)'!=''" >
 		<Message Text="Verificando Servico: $(NomeServicoWin)"/>
         <MSBuild.ExtensionPack.Computer.WindowsService TaskAction="CheckExists" ServiceName="$(NomeServicoWin)">
