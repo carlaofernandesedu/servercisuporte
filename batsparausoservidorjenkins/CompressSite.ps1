@@ -43,9 +43,26 @@ Write-Host "====================================================================
 Write-Host " "
 Write-Host "Arquivos existentes no pacote"
 $listdlls = $folder + '\bin\*.dll'
+$listfolderdlls = $folder + '\bin'
 $listfolders = $folder +  '\paginas'
-get-Childitem $listdlls 
-get-ChildItem -Directory -Path $listfolders 
+
+if (Test-Path $listfolderdlls)
+{
+    get-Childitem $listdlls 
+}
+else 
+{
+    Write-Host "Nao existem arquivos para o caminho " $listfolderdlls  
+}
+
+if (Test-Path $listfolders)
+{
+  get-ChildItem -Directory -Path $listfolders 
+}
+else 
+{
+  Write-Host "Nao existem arquivos para o caminho " $listfolders  
+}
 Write-Host "===================================================================================="
 Write-Host "Gerando o arquivo de Log a partir do conteudo da pasta:" $folder
 Write-Host "===================================================================================="
